@@ -4,10 +4,23 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
 
+    AudioSource audioSource;
+    public AudioClip clearME;
+    public AudioClip damageSE;
+
     Vector3 playerPos;
 	// Use this for initialization
-	void Start () {
 
+    // ゲームステート
+    public enum GAME_STATE{
+        PLAY,
+        CLEAR,
+        MISS,
+    }
+    public GAME_STATE gameState = GAME_STATE.PLAY;
+
+	void Start () {
+        audioSource = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
@@ -17,7 +30,29 @@ public class GameManager : MonoBehaviour {
 
     public void Miss(){
         // ミスした時の処理
+
+        gameState = GAME_STATE.MISS;
+        audioSource.PlayOneShot(damageSE);
+
+        StartCoroutine(Example());
+
+
+    }
+
+    public void Clear(){
+        // クリアした時の処理
+        gameState = GAME_STATE.CLEAR;
+        audioSource.Stop();
+
+        audioSource.PlayOneShot(clearME);
+    }
+
+
+    IEnumerator Example()
+    {
+        print(Time.time);
+        yield return new WaitForSeconds(1);
         Application.LoadLevel("Tutorial Stage");
-        //GameObject.Find("Player").GetComponent<Transform>().position = new Vector3(-5f, -1.5f, 0);
+        print(Time.time);
     }
 }

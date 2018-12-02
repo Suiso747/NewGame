@@ -20,6 +20,12 @@ public class PlayerController : MonoBehaviour {
     bool goJump = false; // ジャンプしたか否か
     bool canJump = false; // ジャンプできるか否か
 
+    // サウンド関係
+    AudioSource audioSource;
+    public AudioClip jumpSE; // ジャンプSE
+    public AudioClip groundedSE; // 着地SE
+    bool beepedGroundedSE = true; // 着地SEを鳴らしたか
+
     // プレイヤーの進行方向
     public enum MOVE_DIR
     {
@@ -32,6 +38,7 @@ public class PlayerController : MonoBehaviour {
 
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
+        audioSource = GetComponent<AudioSource>();
 	}
 	
 
@@ -43,6 +50,15 @@ public class PlayerController : MonoBehaviour {
                                transform.position - (transform.up * 0.25f), blockLayer) ||
             Physics2D.Linecast((transform.position + transform.right * 0.1f - (transform.up * 0.15f)),
                                transform.position - (transform.up * 0.25f), blockLayer);
+
+        if (canJump && !beepedGroundedSE){
+            audioSource.clip = groundedSE;
+            audioSource.time = 0.1f;  // SEの再生時間微調整
+            audioSource.Play();
+
+            beepedGroundedSE = true;
+        }
+      
 
         float x = Input.GetAxisRaw("Horizontal"); // キーボードの左右を押しているか
 
@@ -78,9 +94,15 @@ public class PlayerController : MonoBehaviour {
         }
 
         rb.velocity = new Vector2(moveSpeed, rb.velocity.y); // y方向は速度保存
+
+        // ジャンプ処理
         if (goJump){
+            audioSource.clip = jumpSE;
+            audioSource.time = 0.05f; // SEの再生時間微調整
+            audioSource.Play();
             rb.AddForce(Vector2.up * jumpPower);
             goJump = false;
+            beepedGroundedSE = false;
         }
     }
 
@@ -88,16 +110,30 @@ public class PlayerController : MonoBehaviour {
     // 衝突処理
     private void OnCollisionStay2D(Collision2D collision)
     {
-        // 接触している物体が赤色か 
+        if (gameManager.GetComponent<GameManager>().gameState != GameManager.GAME_STATE.PLAY){
+            return;
 
+        }
+        // 接触している物体が赤色か 
         if (collision.gameObject.GetComponent<SpriteRenderer>().color.r >= 0.9f &&
            collision.gameObject.GetComponent<SpriteRenderer>().color.g <= 0.1f &&
            collision.gameObject.GetComponent<SpriteRenderer>().color.b <= 0.1f)
         {
             // ミスした時の処理 (アニメーション)
             Debug.Log("MISS");
-            GameObject.Find("GameManager").GetComponent<GameManager>().Miss();
+            gameObject.SetActive(false);
+            gameManager.GetComponent<GameManager>().Miss();
         }
-    }  
+
+        // ゴールだったら
+        if (collision.gameObject.tag == "Goal")
+        {
+            Debug.Log("CLEAR");
+            gameObject.SetActive(false);
+            gameManager.GetComponent<GameManager>().Clear();
+        }
+
+    }
+
 
 }
