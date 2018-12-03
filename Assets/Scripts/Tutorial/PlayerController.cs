@@ -8,6 +8,11 @@ public class PlayerController : MonoBehaviour {
 
 
     public GameObject gameManager;
+    public GameObject eyes;
+    public GameObject eye1;
+    public GameObject eye2;
+    public GameObject eye3;
+    public GameObject eye4;
 
     public LayerMask blockLayer; // ブロックレイヤー(このレイヤーと上から接しているときはジャンプ可能)
 
@@ -51,6 +56,19 @@ public class PlayerController : MonoBehaviour {
             Physics2D.Linecast((transform.position + transform.right * 0.1f - (transform.up * 0.15f)),
                                transform.position - (transform.up * 0.25f), blockLayer);
 
+        if (!canJump ){ // 上昇 or 下降 で目のスプライト位置を変更
+            if (rb.velocity.y > 0){
+                eyes.transform.localPosition = new Vector3(eyes.transform.localPosition.x,
+                                                     0.1f,
+                                                     eyes.transform.localPosition.z);
+            }
+            else{
+                eyes.transform.localPosition = new Vector3(eyes.transform.localPosition.x,
+                                                     -0.1f,
+                                                     eyes.transform.localPosition.z);
+            }
+        }
+
         if (canJump && !beepedGroundedSE){
             audioSource.clip = groundedSE;
             audioSource.time = 0.1f;  // SEの再生時間微調整
@@ -64,8 +82,16 @@ public class PlayerController : MonoBehaviour {
 
         if (x > 0){
             moveDirection = MOVE_DIR.RIGHT;
+            eye1.SetActive(true);
+            eye2.SetActive(true);
+            eye3.SetActive(false);
+            eye4.SetActive(false);
         } else if (x < 0){
             moveDirection = MOVE_DIR.LEFT;
+            eye1.SetActive(false);
+            eye2.SetActive(false);
+            eye3.SetActive(true);
+            eye4.SetActive(true);
         } else {
             moveDirection = MOVE_DIR.STOP;
         }
@@ -103,6 +129,7 @@ public class PlayerController : MonoBehaviour {
             rb.AddForce(Vector2.up * jumpPower);
             goJump = false;
             beepedGroundedSE = false;
+           
         }
     }
 
@@ -133,6 +160,24 @@ public class PlayerController : MonoBehaviour {
             gameManager.GetComponent<GameManager>().Clear();
         }
 
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Water"){
+            rb.gravityScale = -3;
+            rb.drag = 1;
+        }
+
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Water")
+        {
+            rb.gravityScale = 3;
+            rb.drag = 0;
+        }
     }
 
 

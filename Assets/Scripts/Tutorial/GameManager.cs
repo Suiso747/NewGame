@@ -1,12 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour {
 
     AudioSource audioSource;
     public AudioClip clearME;
     public AudioClip damageSE;
+    public Image redImage;
 
     Vector3 playerPos;
 	// Use this for initialization
@@ -34,7 +38,10 @@ public class GameManager : MonoBehaviour {
         gameState = GAME_STATE.MISS;
         audioSource.PlayOneShot(damageSE);
 
-        StartCoroutine(Example());
+        redImage.color = new Color(0.5f, 0f, 0f, 0.5f);
+
+
+        StartCoroutine(Restart());
 
 
     }
@@ -43,16 +50,24 @@ public class GameManager : MonoBehaviour {
         // クリアした時の処理
         gameState = GAME_STATE.CLEAR;
         audioSource.Stop();
-
         audioSource.PlayOneShot(clearME);
+        StartCoroutine(SceneChange());
+
     }
 
 
-    IEnumerator Example()
+    IEnumerator Restart()
     {
-        print(Time.time);
         yield return new WaitForSeconds(1);
-        Application.LoadLevel("Tutorial Stage");
-        print(Time.time);
+        SceneManager.LoadScene("Tutorial Stage");
+    }
+
+    // ファンファーレを聞いて次のシーンへ
+    IEnumerator SceneChange()
+    {
+        yield return new WaitForSeconds(10);
+        SceneManager.LoadScene("City");
+
+
     }
 }

@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Fly
   - Goal
+  - Water
+  - Fish
   layers:
   - Default
   - TransparentFX
