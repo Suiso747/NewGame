@@ -36,7 +36,10 @@ public class TextManager : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate () {
 
-        playerPos = GameObject.Find("Player").transform.position;
+        if ( GetComponent<GameManager>().gameState == GameManager.GAME_STATE.PLAY){
+            playerPos = GameObject.Find("Player").transform.position;
+
+        }
 
         if (playerPos.x <= 5)
         {
@@ -58,7 +61,7 @@ public class TextManager : MonoBehaviour {
         {
 
 
-            messageText.text = "灰色のブロックは重力に従うよ！\n" +
+            messageText.text = "一部のブロックは重力に従うよ！\n" +
                  "体当たりしてみよう！";
             if (isReadText[1] == false)
             {
@@ -69,7 +72,7 @@ public class TextManager : MonoBehaviour {
         else if (playerPos.x <= 34)
         {
 
-            messageText.text = "洞窟だ！くれぐれも「赤いモノ」に注意しよう！";
+            messageText.text = "旗を取ると、次にここから再開出来るぞ！";
             if (isReadText[2] == false)
             {
                 audioSource.PlayOneShot(textSE);
@@ -99,8 +102,8 @@ public class TextManager : MonoBehaviour {
         else if (playerPos.x <= 52)
         {
 
-            messageText.text = "そう！彼女の誕生日だったね！" +
-                "今から街へプレゼントを買いに行くんだったね！";
+            messageText.text = "そう！新しいゲームセンターの開店日だ！" +
+                "最新のVRゲームが遊べるらしいよ！";
             if (isReadText[5] == false)
             {
                 audioSource.PlayOneShot(textSE);
@@ -110,8 +113,9 @@ public class TextManager : MonoBehaviour {
         else if (playerPos.x <= 68)
         {
 
-            messageText.text = "もうすぐ街だよ！" +
-                "何を買おうかな〜！";
+            messageText.text = "赤いモノに当たっちゃいけないのは" +
+                "VRゲームのルールみたいだよ！" +
+                "リアルで予習しとかないとね！";
             if (isReadText[6] == false)
             {
                 audioSource.PlayOneShot(textSE);
@@ -119,7 +123,7 @@ public class TextManager : MonoBehaviour {
             }
         }
         else{
-            messageText.text = "黄色の光がゴールだ！";
+            messageText.text = "黄色の光の先が街だ！";
             if (isReadText[7] == false)
             {
                 audioSource.PlayOneShot(textSE);

@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour {
 
     const float MOVE_SPEED = 3; // 移動速度固定値
     float moveSpeed; // ゲーム中の移動速度
+    [HideInInspector] public float speedRate = 1.0f; // 移動速度倍率
+    [HideInInspector] public bool reverse; // 左右反転
 
     float jumpPower = 120; // ジャンプ力
     bool goJump = false; // ジャンプしたか否か
@@ -30,6 +32,12 @@ public class PlayerController : MonoBehaviour {
     public AudioClip jumpSE; // ジャンプSE
     public AudioClip groundedSE; // 着地SE
     bool beepedGroundedSE = true; // 着地SEを鳴らしたか
+    public AudioClip saveSE; // セーブSE
+
+    // 最後にセーブしたセーブポイントのIDと座標
+    string ID = "SaveID";
+    string X = "SaveX";
+    string Y = "SaveY";
 
     // プレイヤーの進行方向
     public enum MOVE_DIR
@@ -44,7 +52,25 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
-	}
+        speedRate = 1;
+
+
+        // セーブ地点から再開
+        int RestartPoint = PlayerPrefs.GetInt(ID, 0);
+        if (RestartPoint != 0)
+        {
+            Debug.Log("relocated");
+            Debug.Log(PlayerPrefs.GetFloat(X) + ", " + PlayerPrefs.GetFloat(Y));
+            transform.position = new Vector3(PlayerPrefs.GetFloat(X), PlayerPrefs.GetFloat(Y), 0);
+
+
+
+        }
+
+
+    }
+
+
 	
 
 	void Update () {
@@ -67,6 +93,10 @@ public class PlayerController : MonoBehaviour {
                                                      -0.1f,
                                                      eyes.transform.localPosition.z);
             }
+        }else{
+                eyes.transform.localPosition = new Vector3(eyes.transform.localPosition.x,
+                                                     0.0f,
+                                                     eyes.transform.localPosition.z);
         }
 
         if (canJump && !beepedGroundedSE){
@@ -79,6 +109,9 @@ public class PlayerController : MonoBehaviour {
       
 
         float x = Input.GetAxisRaw("Horizontal"); // キーボードの左右を押しているか
+        if (reverse){
+            x = -x;
+        }
 
         if (x > 0){
             moveDirection = MOVE_DIR.RIGHT;
@@ -109,10 +142,10 @@ public class PlayerController : MonoBehaviour {
         // 移動方向で処理分岐
         switch (moveDirection){
             case MOVE_DIR.RIGHT:
-                moveSpeed = MOVE_SPEED;
+                moveSpeed = MOVE_SPEED * speedRate;
                 break;
             case MOVE_DIR.LEFT:
-                moveSpeed = -MOVE_SPEED;
+                moveSpeed = -MOVE_SPEED * speedRate;
                 break;
             case MOVE_DIR.STOP:
                 moveSpeed = 0f;
@@ -142,9 +175,12 @@ public class PlayerController : MonoBehaviour {
 
         }
         // 接触している物体が赤色か 
-        if (collision.gameObject.GetComponent<SpriteRenderer>().color.r >= 0.9f &&
-           collision.gameObject.GetComponent<SpriteRenderer>().color.g <= 0.1f &&
-           collision.gameObject.GetComponent<SpriteRenderer>().color.b <= 0.1f)
+        if (collision.gameObject.GetComponent<SpriteRenderer>().color.r >= 0.85 &&
+            collision.gameObject.GetComponent<SpriteRenderer>().color.r <= 0.86 &&
+           collision.gameObject.GetComponent<SpriteRenderer>().color.g >= 0.25 &&
+            collision.gameObject.GetComponent<SpriteRenderer>().color.g <= 0.26 &&
+           collision.gameObject.GetComponent<SpriteRenderer>().color.b >= 0.21 &&
+            collision.gameObject.GetComponent<SpriteRenderer>().color.b <= 0.22)
         {
             // ミスした時の処理 (アニメーション)
             Debug.Log("MISS");
@@ -162,23 +198,61 @@ public class PlayerController : MonoBehaviour {
 
     }
 
+
+
     private void OnTriggerStay2D(Collider2D collision)
     {
+        // 水に入るときの処理
         if (collision.gameObject.tag == "Water"){
-            rb.gravityScale = -3;
+            if (rb.gravityScale > 0){
+                rb.gravityScale = -rb.gravityScale;
+            }
+
             rb.drag = 1;
+        }
+
+        // セーブ地点に接触したときの処理
+        if (collision.gameObject.tag == "Flag")
+        {
+            if (PlayerPrefs.GetInt(ID, 0) != collision.gameObject.GetComponent<SavePoint>().SAVE_ID){
+                Debug.Log("saved");
+                audioSource.clip = saveSE;
+                audioSource.time = 0.1f;  // SEの再生時間微調整
+                audioSource.Play();
+                collision.GetComponent<SavePoint>().Save();
+            }
+      
         }
 
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        // 水から出るときの処理
         if (collision.gameObject.tag == "Water")
         {
-            rb.gravityScale = 3;
+            rb.gravityScale = 3; //デフォルト値
             rb.drag = 0;
         }
     }
 
+
+    // 水平に動く床で滑らないようにする
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "MoveStage")
+        {
+            Debug.Log("collision");
+            transform.SetParent(collision.transform);
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "MoveStage")
+        {
+            transform.SetParent(null);
+        }
+    }
 
 }

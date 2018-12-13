@@ -5,14 +5,12 @@ using UnityEngine;
 public class Fish : MonoBehaviour {
 
     public Transform tailFin;
-    float tailFinPos_x;
     float moveSpeed;
     Rigidbody2D rb;
     float initialPos;
 
 	// Use this for initialization
 	void Start () {
-        tailFinPos_x = tailFin.localPosition.x;
         rb = GetComponent<Rigidbody2D>();
         initialPos = transform.position.x;
         moveSpeed = -0.3f;

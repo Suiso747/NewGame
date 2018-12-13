@@ -12,7 +12,8 @@ public class GameManager : MonoBehaviour {
     public AudioClip damageSE;
     public Image redImage;
 
-    Vector3 playerPos;
+    public GameObject player;
+    //Vector3 playerPos;
 	// Use this for initialization
 
     // ゲームステート
@@ -23,7 +24,13 @@ public class GameManager : MonoBehaviour {
     }
     public GAME_STATE gameState = GAME_STATE.PLAY;
 
-	void Start () {
+    // 最後にセーブしたセーブポイントのIDと座標
+    string ID = "SaveID";
+    //string X = "SaveX";
+    //string Y = "SaveY";
+
+
+    void Start () {
         audioSource = GetComponent<AudioSource>();
 	}
 	
@@ -59,14 +66,36 @@ public class GameManager : MonoBehaviour {
     IEnumerator Restart()
     {
         yield return new WaitForSeconds(1);
-        SceneManager.LoadScene("Tutorial Stage");
+        // 現在のScene名を取得する
+        Scene loadScene = SceneManager.GetActiveScene();
+        // Sceneの読み直し
+        SceneManager.LoadScene(loadScene.name);
+        Debug.Log(PlayerPrefs.GetInt(ID));
+
     }
 
-    // ファンファーレを聞いて次のシーンへ
+    // ファンファーレを聞いてシーン遷移
     IEnumerator SceneChange()
     {
+
+
         yield return new WaitForSeconds(10);
-        SceneManager.LoadScene("City");
+
+
+        PlayerPrefs.SetInt(ID, 0);
+        PlayerPrefs.Save();
+
+        // TUTORIAL STAGEの場合
+        SceneManager.LoadScene("METROPOLIS STAGE");
+
+        // METROPORIS STAGEの場合
+
+        // TODO GAME CENTERへ遷移
+
+        // それ以外の場合
+        
+        // TODO GAME CENTERへ遷移
+
 
 
     }

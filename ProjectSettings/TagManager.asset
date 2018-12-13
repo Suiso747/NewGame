@@ -8,6 +8,8 @@ TagManager:
   - Goal
   - Water
   - Fish
+  - MoveStage
+  - Flag
   layers:
   - Default
   - TransparentFX

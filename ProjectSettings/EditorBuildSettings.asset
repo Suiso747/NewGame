@@ -6,9 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Tutorial Stage.unity
+    path: Assets/Scenes/TUTORIAL STAGE.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/City.unity
+    path: Assets/Scenes/METROPOLIS STAGE.unity
     guid: 328bf29cda0294393a4c11979f195d25
   m_configObjects: {}
