@@ -49,3 +49,5 @@ Thumbs.db
 
 #python bytecode cache, for some plugins.
 *.pyc
+Library/PlayerDataCache/WebGL/Data/resources.resource
+.git/objects/db/fef8c604302f169634374b183c638a5f24a3b0
