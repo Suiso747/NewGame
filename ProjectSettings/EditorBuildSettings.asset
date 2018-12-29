@@ -6,9 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/TITLE.unity
+    guid: dd89703c55a6743fc8884c0e4673f8aa
+  - enabled: 1
+    path: Assets/Scenes/MENU.unity
+    guid: 80fc5c8485f8646d2b8408797732f703
+  - enabled: 1
     path: Assets/Scenes/TUTORIAL STAGE.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
     path: Assets/Scenes/METROPOLIS STAGE.unity
     guid: 328bf29cda0294393a4c11979f195d25
+  - enabled: 1
+    path: Assets/Scenes/ELECTRON STAGE.unity
+    guid: 9cc1b4f6a4ada4297b8b67af2bf2a04a
   m_configObjects: {}

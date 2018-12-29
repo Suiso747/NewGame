@@ -17,6 +17,7 @@ public class Magicreverse : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+
         player = GameObject.Find("Player");
         audioSource = GetComponent<AudioSource>();
     }

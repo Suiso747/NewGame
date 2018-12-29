@@ -54,7 +54,6 @@ public class PlayerController : MonoBehaviour {
         audioSource = GetComponent<AudioSource>();
         speedRate = 1;
 
-
         // セーブ地点から再開
         int RestartPoint = PlayerPrefs.GetInt(ID, 0);
         if (RestartPoint != 0)
@@ -102,6 +101,8 @@ public class PlayerController : MonoBehaviour {
         if (canJump && !beepedGroundedSE){
             audioSource.clip = groundedSE;
             audioSource.time = 0.1f;  // SEの再生時間微調整
+
+
             audioSource.Play();
 
             beepedGroundedSE = true;

@@ -24,10 +24,14 @@ public class GameManager : MonoBehaviour {
     }
     public GAME_STATE gameState = GAME_STATE.PLAY;
 
-    // 最後にセーブしたセーブポイントのIDと座標
+    // 最後にセーブしたセーブポイントのID
     string ID = "SaveID";
-    //string X = "SaveX";
-    //string Y = "SaveY";
+
+    // クリアしたステージ
+    string STAGE1 = "TURORIAL";
+    string STAGE2 = "METROPOLIS";
+    string STAGE3 = "ELECTRON";
+    // TODO ステージ作ったら追加 (TitleManagerの方も同様)
 
 
     void Start () {
@@ -55,6 +59,10 @@ public class GameManager : MonoBehaviour {
 
     public void Clear(){
         // クリアした時の処理
+
+        //
+
+
         gameState = GAME_STATE.CLEAR;
         audioSource.Stop();
         audioSource.PlayOneShot(clearME);
@@ -85,15 +93,36 @@ public class GameManager : MonoBehaviour {
         PlayerPrefs.SetInt(ID, 0);
         PlayerPrefs.Save();
 
+        Scene loadScene = SceneManager.GetActiveScene();
         // TUTORIAL STAGEの場合
-        SceneManager.LoadScene("METROPOLIS STAGE");
+        if (loadScene.name == "TUTORIAL STAGE")
+        {
+            PlayerPrefs.SetInt(STAGE1, 1);
+            PlayerPrefs.Save();
+            SceneManager.LoadScene("METROPOLIS STAGE");
+        }
+        // METROPORIS STAGEの場合               
+        else if (loadScene.name == "METROPOLIS STAGE")
+        {
+            PlayerPrefs.SetInt(STAGE2, 1);
+            PlayerPrefs.Save();
+            SceneManager.LoadScene("STAGE SELECT");
 
-        // METROPORIS STAGEの場合
+        }
+        // ELECTRON STAGEの場合
+        else if(loadScene.name == "ELECTRON STAGE")
+        {
+            PlayerPrefs.SetInt(STAGE3, 1);
+            PlayerPrefs.Save();
+            SceneManager.LoadScene("STAGE SELECT");
+            // TODO GAME CENTERへ遷移
+        }else{
 
-        // TODO GAME CENTERへ遷移
+            PlayerPrefs.Save();
+            SceneManager.LoadScene("TITLE");
+        }
 
-        // それ以外の場合
-        
+
         // TODO GAME CENTERへ遷移
 
 
