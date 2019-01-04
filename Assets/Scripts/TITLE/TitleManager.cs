@@ -9,9 +9,7 @@ public class TitleManager : MonoBehaviour
 
     public Image logo;
     // クリアしたステージ
-    string STAGE1 = "TURORIAL";
-    string STAGE2 = "METROPOLIS";
-    string STAGE3 = "ELECTRON";
+    string TUTORIAL = "TURORIAL";
 
     // Use this for initialization
     void Start()
@@ -28,28 +26,25 @@ public class TitleManager : MonoBehaviour
 
     // メニューからNewGameを選んだ場合の処理
     public void NewGame(){
+        // セーブデータ全消去
         PlayerPrefs.DeleteAll();
         SceneManager.LoadScene("TUTORIAL STAGE");
     }
 
 
 
-    // メニューからNewGameを選んだ場合の処理
+    // メニューからContinueを選んだ場合の処理
     public void Continue()
     {
         Debug.Log("Continue");
 
-        // METROPOLISをクリアしている場合
-        if (PlayerPrefs.GetInt(STAGE2)==1){
-            SceneManager.LoadScene("STAGE SELECT");// 拠点
-
-        }
         // TUTORIALをクリアしている場合
-        else if(PlayerPrefs.GetInt(STAGE1) == 1){
-            SceneManager.LoadScene("METROPOLIS STAGE");
+        if(PlayerPrefs.GetInt(TUTORIAL) == 1){
+            SceneManager.LoadScene("STAGE SELECT");
         }else{
             // それ以外、TUTORIALから
-            SceneManager.LoadScene("TUTORIAL STAGE");
+            Debug.Log("There is no save data");
+            //SceneManager.LoadScene("TUTORIAL STAGE");
         }
 
     }

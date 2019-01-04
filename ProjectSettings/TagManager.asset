@@ -10,6 +10,8 @@ TagManager:
   - Fish
   - MoveStage
   - Flag
+  - Reverse
+  - SpeedUp
   layers:
   - Default
   - TransparentFX
@@ -20,7 +22,7 @@ TagManager:
   - 
   - 
   - Block
-  - 
+  - FallNeedle
   - 
   - 
   - 
